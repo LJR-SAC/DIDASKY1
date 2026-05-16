@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIDASKY — Mapa del Saber</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="DIDASKY.css">
+</head>
+<body>
+
+<!-- Pantalla de inicio -->
+<section id="inicioScreen" class="pantalla activa">
+    <div class="estrellas" aria-hidden="true"></div>
+    <div class="inicio-content">
+        <div class="ornament">⚓ ✦ ⚓</div>
+        <h1 class="titulo-inicio">DIDASKY</h1>
+        <p class="subtitulo-inicio">
+            Navega el conocimiento.<br>Corrige el rumbo. Conquista el saber.
+        </p>
+        <div class="ornament">⚓ ✦ ⚓</div>
+
+        <div class="materia-selector">
+            <p class="materia-pregunta">¿Qué océano navegarás hoy?</p>
+            <div class="materia-opciones">
+                <button class="materia-btn activa-materia" data-materia="fisica">
+                    <span class="materia-icono">⚗️</span>
+                    <span class="materia-nombre">Física</span>
+                    <span class="materia-desc">Fuerza, movimiento, energía</span>
+                </button>
+                <button class="materia-btn" data-materia="matematicas">
+                    <span class="materia-icono">📐</span>
+                    <span class="materia-nombre">Matemáticas</span>
+                    <span class="materia-desc">Álgebra, geometría y más</span>
+                </button>
+            </div>
+        </div>
+
+        <button id="btnEmpezar" class="btn-inicio">⚓ Zarpar al Mapa</button>
+    </div>
+
+    <div class="olas-wrapper" aria-hidden="true">
+        <div class="ola"></div>
+        <div class="ola ola2"></div>
+        <div class="ola ola3"></div>
+    </div>
+</section>
+
+<!-- Pantalla de diagnóstico global (antes del mapa) -->
+<section id="diagnosticoScreen" class="pantalla oculta">
+    <div class="pergamino-card" style="max-width: 720px; margin: 40px auto; padding: 2rem;">
+        <h2 style="text-align:center; color:var(--oro-bright); margin-bottom:1rem;">🧭 Diagnóstico del Navegante</h2>
+        <p style="text-align:center; margin-bottom:1.5rem; color:var(--perg-dark);">
+            Resuelve este problema rápidamente para que podamos ajustar el nivel.
+        </p>
+        <div id="diagProblema" class="enunciado-box" style="min-height: 100px;"></div>
+        <div class="respuesta-zona">
+            <input type="number" id="diagRespuesta" class="input-pirata" placeholder="Tu respuesta numérica..." autocomplete="off">
+            <button id="diagEnviar" class="btn-comprobar">Responder</button>
+        </div>
+        <div id="diagResultado" class="retro-zona oculta"></div>
+        <div style="text-align:center; margin-top:1.2rem; color:var(--perg-dark);">
+            Tiempo restante: <strong id="timerText" style="color:var(--oro-bright); font-size:1.1rem;">60</strong> segundos
+            <div class="progreso-wrap" style="margin-top:8px;">
+                <div id="timerBar" class="progreso-barra" style="width:100%"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pantalla del mapa de temas -->
+<section id="mapaScreen" class="pantalla oculta">
+    <header class="topbar">
+        <div class="topbar-izq">
+            <span class="topbar-logo">🌌 DIDASKY</span>
+            <span class="materia-tag" id="topbarMateriaBadge">⚗️ Física</span>
+        </div>
+        <div class="topbar-der">
+            <div class="score-pill">⭐ <span id="scoreTop">0</span></div>
+            <button class="btn-cambiar" id="btnCambiarMateria">🔄 Cambiar materia</button>
+        </div>
+    </header>
+    <div class="mapa-outer">
+        <div class="pergamino-mapa">
+            <div class="deco deco-brujula">🧭</div>
+            <div class="deco deco-barco">⛵</div>
+            <div class="deco deco-dragon">🐉</div>
+            <div class="deco deco-cofre">💰</div>
+            <div class="nivel-tag-mapa">
+                Nivel del Navegante: <strong id="nivelBadgeMapa">5.0</strong> / 10
+            </div>
+            <div class="ruta-vertical" id="rutaVertical"></div>
+        </div>
+    </div>
+
+    <!-- Popup nodo -->
+    <div class="popup-overlay oculta" id="popupOverlay"></div>
+    <div id="nodoPopup" class="nodo-popup oculta">
+        <div class="popup-icono" id="popupIcono">🚗</div>
+        <div class="popup-nombre" id="popupNombre">MRU</div>
+        <div class="popup-desc" id="popupDesc">Movimiento Rectilíneo Uniforme</div>
+        <button class="popup-entrar-btn" id="popupEntrar">⚓ Explorar este tema</button>
+        <button class="popup-cerrar-btn" id="popupCerrar">✕</button>
+    </div>
+</section>
+
+<!-- Pantalla de ejercicios -->
+<section id="ejercicioScreen" class="pantalla oculta">
+    <header class="topbar">
+        <button id="btnVolverMapa" class="btn-volver">← Mapa</button>
+        <span class="topbar-tema-titulo" id="topbarTemaTitulo">🚗 MRU</span>
+        <div class="score-pill">⭐ <span id="scoreEjercicio">0</span></div>
+    </header>
+    <div class="ejercicio-outer">
+        <div class="pergamino-card">
+            <div class="ejercicio-meta-row">
+                <div class="nivel-tag-ej">⚓ Nivel <strong id="nivelActual">5.0</strong></div>
+                <div class="progreso-wrap">
+                    <div class="progreso-barra" id="progresoBarra" style="width:50%"></div>
+                </div>
+            </div>
+            <div id="enunciadoEjercicio" class="enunciado-box">
+                <div class="cargando-msg">🧭 Generando reto del mapa...</div>
+            </div>
+            <div class="respuesta-zona">
+                <input type="number" id="respuestaEjercicio" class="input-pirata" placeholder="Tu respuesta numérica..." autocomplete="off">
+                <button id="comprobarEjercicio" class="btn-comprobar">⚓ Comprobar</button>
+            </div>
+            <div id="retroalimentacion" class="retro-zona"></div>
+            <div class="acciones-row">
+                <button id="ayudaDasky" class="btn-pista">🤖 Pedir pista a Dasky</button>
+                <button id="saltarEjercicio" class="btn-saltar">↩ Saltar</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pantalla de diagnóstico rápido por tema -->
+<section id="diagnosticoTemaScreen" class="pantalla oculta">
+    <div class="pergamino-card" style="max-width: 720px; margin: 40px auto; padding: 2.5rem;">
+        <h2 style="text-align:center; color:var(--oro-bright); margin-bottom:1rem;">
+            ⚓ Diagnóstico Rápido — <span id="diagTemaNombre"></span>
+        </h2>
+        <p style="text-align:center; margin-bottom:1.5rem; color:var(--perg-dark);" id="diagTemaDesc"></p>
+        <div id="diagTemaEnunciado" class="enunciado-box" style="min-height: 140px;"></div>
+        <div class="respuesta-zona">
+            <input type="number" id="diagTemaInput" class="input-pirata" placeholder="Tu respuesta numérica..." autocomplete="off">
+            <button id="diagTemaComprobar" class="btn-comprobar">Comprobar (60s)</button>
+        </div>
+        <div id="diagTemaRetro" class="retro-zona"></div>
+        <div style="text-align:center; margin-top:1.2rem; color:var(--perg-dark);">
+            Tiempo restante: <strong id="diagTemaTimer" style="color:var(--oro-bright); font-size:1.1rem;">60</strong> segundos
+        </div>
+    </div>
+</section>
+
+<!-- Dasky Chat -->
+<div id="daskyChatBox" class="dasky-chat oculta">
+    <div class="dasky-header">
+        <span>🤖 Dasky — El Navegante Sabio</span>
+        <button id="daskyClose" class="dasky-x">✕</button>
+    </div>
+    <div id="daskyMessages" class="dasky-mensajes">
+        <div class="msg-dasky">
+            <strong>Dasky:</strong><br>
+            ¡Ahoy, navegante! Pregúntame lo que necesites. Daré pistas, ¡no respuestas directas!
+        </div>
+    </div>
+    <div class="dasky-footer">
+        <input type="text" id="daskyInput" class="dasky-input" placeholder="Escribe tu duda...">
+        <button id="daskyEnviar" class="dasky-send">↗</button>
+    </div>
+</div>
+
+<button id="daskyToggle" class="dasky-fab oculta" title="Abrir Dasky">🤖</button>
+
+<script type="module" src="DIDASKY.js"></script>
+</body>
+</html>
