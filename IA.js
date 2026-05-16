@@ -1,4 +1,4 @@
-// IA.js - Ahora llama a tu propio backend en Vercel
+
 export async function callOpenRouter(prompt) {
     try {
         const response = await fetch('/api/chat', {
